@@ -25,31 +25,19 @@ async function dibujarRutaOficial(clvRuta) {
 
     const { data: puntos, error } = await _supabase
         .from('puntos_ruta')
-        .select('lat, long, orden') // Traemos 'long' como está en tu esquema
+        .select('lat, long, orden') 
         .eq('clvRuta', clvRuta)
         .order('orden', { ascending: true });
-
-    if (error) {
-        console.error("Error de Supabase:", error.message);
-        return;
-    }
-
-    if (!puntos || puntos.length === 0) {
-        console.warn("No se encontraron puntos para la ruta:", clvRuta);
-        return;
-    }
-
-    console.log("Puntos encontrados:", puntos.length);
 
     // Convertimos los datos al formato de Leaflet [lat, long]
     const latlngs = puntos.map(p => [p.lat, p.long]);
 
     // Dibujar la polilínea
     const poly = L.polyline(latlngs, {
-        color: '#3388ff', 
-        weight: 5, 
-        dashArray: '10, 10', 
-        opacity: 0.7
+        color: '#23998e', 
+        weight: 3, 
+        lineJoin: "round", 
+        opacity: 0.8
     }).addTo(map);
 
     // Ajustar el zoom automáticamente para que se vea toda la ruta trazada
