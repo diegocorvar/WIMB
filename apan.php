@@ -1,21 +1,13 @@
 <?php
-// ESTE ARCHIVO SOLO RECIBE clvRuta
-// AQUÍ DESPUÉS EL EQUIPO BACKEND CONECTARÁ MYSQL
+session_start();
 
-if($_SERVER["REQUEST_METHOD"]==="POST"){
-    
-    $clvRuta = $_POST["clvRuta"];
+if (!isset($_SESSION['mis_rutas'])) {
+    $_SESSION['mis_rutas'] = [];
+}
 
-    // Aquí después conectarán la base:
-    /*
-    INSERT INTO mis_rutas (clvRuta, fecha)
-    VALUES ($clvRuta, NOW())
-    */
-
-    echo json_encode([
-        "status"=>"ok",
-        "clvRuta"=>$clvRuta
-    ]);
+if (isset($_POST['guardar_id'])) {
+    $idRuta = $_POST['guardar_id'];
+    $_SESSION['mis_rutas'][] = $idRuta;
     exit;
 }
 ?>
@@ -23,155 +15,132 @@ if($_SERVER["REQUEST_METHOD"]==="POST"){
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>SmartBus Apan</title>
+<meta charset="utf-8">
+<title>Rutas Apan</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-<style>
-body{margin:0;font-family:sans-serif;background:#e9eef2;display:flex;justify-content:center;align-items:center;height:100vh}
-.app{width:95%;max-width:1000px;height:85vh;background:white;border-radius:20px;overflow:hidden;position:relative;box-shadow:0 15px 30px rgba(0,0,0,.2)}
-#map{height:100%}
-.top{position:absolute;top:15px;left:50%;transform:translateX(-50%);width:80%;display:flex;z-index:1000}
-.top input{flex:1;padding:10px;border:none;border-radius:20px 0 0 20px;background:#f3e1b6}
-.top button{width:50px;border:none;border-radius:0 20px 20px 0;background:#23998e;color:white;cursor:pointer}
-.list{position:absolute;top:60px;left:50%;transform:translateX(-50%);width:80%;background:white;border-radius:10px;padding:10px;display:none;z-index:1000}
-.list div{padding:6px;cursor:pointer}
-.list div:hover{background:#f3e1b6}
-.menu{position:absolute;bottom:20px;right:20px;display:none;flex-direction:column;gap:10px;z-index:1000}
-.menu button{width:55px;height:55px;border-radius:50%;border:none;background:#23998e;color:white;font-size:20px;cursor:pointer}
-.panel{position:absolute;bottom:-350px;left:50%;transform:translateX(-50%);width:90%;max-width:450px;height:280px;background:#f3e1b6;border-radius:20px 20px 0 0;padding:10px;transition:.3s;overflow:auto;z-index:1001}
-.panel.active{bottom:0}
-</style>
+<link rel="stylesheet" href="uriel-styles.css"> <!-- TU CSS SEPARADO -->
+
 </head>
 <body>
 
-<div class="app">
-
-<div class="top">
-<input id="busqueda" placeholder="Buscar ruta...">
-<button onclick="mostrar()">🔍</button>
+<div class="barra">
+    <input type="text" id="busqueda" placeholder="Buscar dirección en Apan...">
+    <button class="buscar" onclick="buscarDireccion()">🔍 Buscar</button>
 </div>
 
-<div class="list" id="lista"></div>
 <div id="map"></div>
 
-<div class="menu" id="menu">
-<button onclick="guardar()">🚌</button>
-<button onclick="misRutas()">📋</button>
+<div id="acciones">
+    <button class="guardar" onclick="guardarRuta()">Guardar Ruta</button>
+    <button class="mis" onclick="mostrarMisRutas()">Mis Rutas</button>
 </div>
 
-<div class="panel" id="panel">
-<div style="text-align:right;cursor:pointer" onclick="panel.classList.remove('active')">✖</div>
-<div id="contenido"></div>
-</div>
-
+<div id="misRutasPanel" style="display:none;">
+    <h3>Mis Rutas</h3>
+    <div id="listaRutas">
+        <?php
+        foreach($_SESSION['mis_rutas'] as $ruta){
+            echo "<p>ID Ruta: ".$ruta."</p>";
+        }
+        ?>
+    </div>
 </div>
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
 <script>
+let map = L.map('map').setView([19.708, -98.452], 14);
 
-let map = L.map('map',{zoomControl:false}).setView([19.7120,-98.4500],14);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution:'© OpenStreetMap'
+}).addTo(map);
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(map);
+let marcador = null;
+let rutaSeleccionadaID = null;
 
-let marker=null;
-let rutaLinea=null;
-let clvRutaSeleccionada=null;
-
-// 🔎 ESTA LISTA DESPUÉS VIENE DE TABLA rutas
-// FORMATO EXACTO QUE USARÁ LA BASE
-let rutas = [
-{clvRuta:1, nombre:"Ruta Centro - ITESA", color:"red"},
-{clvRuta:2, nombre:"Ruta Centro - Mercado", color:"blue"},
-{clvRuta:3, nombre:"Ruta Centro - Hospital", color:"green"}
-];
-
-// 🔍 MOSTRAR BÚSQUEDA
-function mostrar(){
-lista.innerHTML="";
-lista.style.display="block";
-
-rutas.forEach(r=>{
-lista.innerHTML+=`
-<div onclick="seleccionar(${r.clvRuta})">
-🟢 ${r.nombre}
-</div>`;
+let busIcon = L.icon({
+    iconUrl: 'https://cdn-icons-png.flaticon.com/512/61/61231.png',
+    iconSize: [35,35]
 });
-}
 
-// 🚍 SELECCIONAR RUTA (usa clvRuta)
-function seleccionar(id){
+map.on('click', function(e){
 
-clvRutaSeleccionada=id;
+    if(marcador){
+        map.removeLayer(marcador);
+    }
 
-if(rutaLinea) map.removeLayer(rutaLinea);
+    marcador = L.marker(e.latlng, {icon: busIcon}).addTo(map);
 
-// AQUÍ DESPUÉS EL BACKEND HARÁ:
-// SELECT * FROM puntos_ruta WHERE clvRuta=id ORDER BY orden
+    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${e.latlng.lat}&lon=${e.latlng.lng}`)
+    .then(res => res.json())
+    .then(data => {
 
-// Simulación visual temporal:
-rutaLinea=L.polyline([
-[19.7120,-98.4500],
-[19.7200,-98.4600]
-],{weight:6}).addTo(map);
+        let direccion = data.display_name || "Ubicación en Apan";
+        marcador.bindPopup(direccion).openPopup();
 
-menu.style.display="flex";
-lista.style.display="none";
-}
+        rutaSeleccionadaID = Math.floor(Math.random() * 1000) + 1;
 
-// 🗺 CLICK PARA SABER DIRECCIÓN (esto sí funciona real)
-map.on("click",function(e){
-
-let lat=e.latlng.lat;
-let lng=e.latlng.lng;
-
-if(marker) map.removeLayer(marker);
-
-marker=L.marker([lat,lng]).addTo(map);
-
-fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
-.then(r=>r.json())
-.then(data=>{
-let direccion=data.display_name || "Dirección no encontrada";
-marker.bindPopup("📍 "+direccion).openPopup();
-});
+        document.getElementById("acciones").style.display = "block";
+    });
 
 });
 
-// 💾 GUARDAR SOLO clvRuta
-function guardar(){
+function buscarDireccion(){
+    let texto = document.getElementById("busqueda").value;
 
-if(!clvRutaSeleccionada){
-alert("Selecciona una ruta primero");
-return;
+    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${texto} Apan Hidalgo`)
+    .then(res => res.json())
+    .then(data => {
+        if(data.length > 0){
+
+            let lat = data[0].lat;
+            let lon = data[0].lon;
+
+            map.setView([lat, lon], 16);
+
+            if(marcador){
+                map.removeLayer(marcador);
+            }
+
+            marcador = L.marker([lat, lon], {icon: busIcon}).addTo(map)
+                .bindPopup(data[0].display_name)
+                .openPopup();
+
+            rutaSeleccionadaID = Math.floor(Math.random() * 1000) + 1;
+
+            document.getElementById("acciones").style.display = "block";
+        } else {
+            alert("No se encontró la dirección");
+        }
+    });
 }
 
-let f=new FormData();
-f.append("clvRuta",clvRutaSeleccionada);
+function guardarRuta(){
 
-fetch("",{method:"POST",body:f})
-.then(r=>r.json())
-.then(data=>{
-alert("Ruta enviada con clave: "+data.clvRuta);
-});
+    if(!rutaSeleccionadaID){
+        alert("Primero selecciona una ruta");
+        return;
+    }
 
+    let formData = new FormData();
+    formData.append("guardar_id", rutaSeleccionadaID);
+
+    fetch("index.php", {
+        method:"POST",
+        body: formData
+    })
+    .then(()=> {
+        alert("Ruta guardada con ID: " + rutaSeleccionadaID);
+    });
 }
 
-// 📋 MIS RUTAS (preparado para backend)
-function misRutas(){
-
-// DESPUÉS HARÁ:
-// SELECT r.nombre, r.color
-// FROM mis_rutas m
-// JOIN rutas r ON r.clvRuta = m.clvRuta
-
-contenido.innerHTML=`
-<h3>Mis Rutas</h3>
-<p>Aquí el backend devolverá las rutas reales usando JOIN.</p>
-`;
-
-panel.classList.add("active");
+function mostrarMisRutas(){
+    let panel = document.getElementById("misRutasPanel");
+    panel.style.display = panel.style.display === "none" ? "block" : "none";
 }
-
 </script>
+
 </body>
 </html>
