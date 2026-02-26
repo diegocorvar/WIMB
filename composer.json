@@ -1,1 +1,5 @@
-{}
+{
+    "name": "proyecto/wimb",
+    "description": "Sistema de monitoreo de buses",
+    "require": {}
+}
