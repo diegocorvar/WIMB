@@ -1,19 +1,25 @@
 <?php
-$file="rutas.json";
+// ESTE ARCHIVO SOLO RECIBE clvRuta
+// AQUÍ DESPUÉS EL EQUIPO BACKEND CONECTARÁ MYSQL
 
 if($_SERVER["REQUEST_METHOD"]==="POST"){
-    $rutas=file_exists($file)?json_decode(file_get_contents($file),true):[];
-    $rutas[]=[
-        "ruta"=>$_POST["ruta"],
-        "destino"=>$_POST["destino"],
-        "lat"=>$_POST["lat"],
-        "lng"=>$_POST["lng"],
-        "fecha"=>date("Y-m-d H:i")
-    ];
-    file_put_contents($file,json_encode($rutas,JSON_PRETTY_PRINT));
-    echo json_encode(["ok"=>true]); exit;
+    
+    $clvRuta = $_POST["clvRuta"];
+
+    // Aquí después conectarán la base:
+    /*
+    INSERT INTO mis_rutas (clvRuta, fecha)
+    VALUES ($clvRuta, NOW())
+    */
+
+    echo json_encode([
+        "status"=>"ok",
+        "clvRuta"=>$clvRuta
+    ]);
+    exit;
 }
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -37,6 +43,7 @@ body{margin:0;font-family:sans-serif;background:#e9eef2;display:flex;justify-con
 </style>
 </head>
 <body>
+
 <div class="app">
 
 <div class="top">
@@ -61,170 +68,110 @@ body{margin:0;font-family:sans-serif;background:#e9eef2;display:flex;justify-con
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script>
-let map = L.map('map', {
-    zoomControl: false,
-    preferCanvas: true
-}).setView([19.7120,-98.4500],14);
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
-    maxZoom:19
-}).addTo(map);
+let map = L.map('map',{zoomControl:false}).setView([19.7120,-98.4500],14);
 
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(map);
+
+let marker=null;
+let rutaLinea=null;
+let clvRutaSeleccionada=null;
+
+// 🔎 ESTA LISTA DESPUÉS VIENE DE TABLA rutas
+// FORMATO EXACTO QUE USARÁ LA BASE
 let rutas = [
-["Centro → ITESA",19.7063,-98.4525,"ITESA Apan"],
-["Centro → Mercado",19.7132,-98.4481,"Mercado Apan"],
-["Centro → Hospital",19.7180,-98.4540,"Hospital Apan"],
-["Centro → Presidencia",19.7115,-98.4490,"Presidencia Apan"],
-["Centro → Deportiva",19.7150,-98.4600,"Unidad Deportiva"]
+{clvRuta:1, nombre:"Ruta Centro - ITESA", color:"red"},
+{clvRuta:2, nombre:"Ruta Centro - Mercado", color:"blue"},
+{clvRuta:3, nombre:"Ruta Centro - Hospital", color:"green"}
 ];
 
-let marker = null;
-let rutaLinea = null;
-let lat,lng,nombre,destino;
-
-const busIcon = L.icon({
-    iconUrl:'https://cdn-icons-png.flaticon.com/512/61/61231.png',
-    iconSize:[38,38],
-    iconAnchor:[19,38]
-});
-
+// 🔍 MOSTRAR BÚSQUEDA
 function mostrar(){
-    let box = lista;
-    box.innerHTML="";
-    box.style.display="block";
+lista.innerHTML="";
+lista.style.display="block";
 
-    rutas.forEach((r,i)=>{
-        box.innerHTML += `
-        <div onclick="seleccionar(${i})">
-        🟢 ${r[0]} <b>(RECOMENDADA)</b>
-        </div>`;
-    });
+rutas.forEach(r=>{
+lista.innerHTML+=`
+<div onclick="seleccionar(${r.clvRuta})">
+🟢 ${r.nombre}
+</div>`;
+});
 }
 
-function seleccionar(i){
-    let r = rutas[i];
-    lat = r[1];
-    lng = r[2];
-    nombre = r[0];
-    destino = r[3];
+// 🚍 SELECCIONAR RUTA (usa clvRuta)
+function seleccionar(id){
 
-    ponerMarker();
-    dibujarRuta([19.7120,-98.4500],[lat,lng]);
-    lista.style.display="none";
+clvRutaSeleccionada=id;
+
+if(rutaLinea) map.removeLayer(rutaLinea);
+
+// AQUÍ DESPUÉS EL BACKEND HARÁ:
+// SELECT * FROM puntos_ruta WHERE clvRuta=id ORDER BY orden
+
+// Simulación visual temporal:
+rutaLinea=L.polyline([
+[19.7120,-98.4500],
+[19.7200,-98.4600]
+],{weight:6}).addTo(map);
+
+menu.style.display="flex";
+lista.style.display="none";
 }
 
-function ponerMarker(){
-    if(marker) map.removeLayer(marker);
+// 🗺 CLICK PARA SABER DIRECCIÓN (esto sí funciona real)
+map.on("click",function(e){
 
-    marker = L.marker([lat,lng],{icon:busIcon})
-    .addTo(map)
-    .bindPopup("🚌 "+destino)
-    .openPopup();
+let lat=e.latlng.lat;
+let lng=e.latlng.lng;
 
-    map.flyTo([lat,lng],16,{duration:0.8});
-    menu.style.display="flex";
-}
+if(marker) map.removeLayer(marker);
 
-function dibujarRuta(origen,destinoCoords){
-    if(rutaLinea) map.removeLayer(rutaLinea);
+marker=L.marker([lat,lng]).addTo(map);
 
-    rutaLinea = L.polyline([origen,destinoCoords],{
-        weight:5,
-        opacity:0.7
-    }).addTo(map);
-}
-
-map.on("click", e=>{
-    lat = e.latlng.lat;
-    lng = e.latlng.lng;
-    nombre = "Ruta personalizada";
-
-    destino = "Obteniendo dirección...";
-    ponerMarker();
-
-    // Cancelar petición anterior si existe
-    if(window.reverseController){
-        window.reverseController.abort();
-    }
-
-    window.reverseController = new AbortController();
-
-    setTimeout(()=>{
-        window.reverseController.abort();
-    },5000); // timeout 5 segundos
-
-    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,{
-        headers:{
-            "Accept":"application/json"
-        },
-        signal: window.reverseController.signal
-    })
-    .then(r=>{
-        if(!r.ok) throw new Error("Error API");
-        return r.json();
-    })
-    .then(d=>{
-        if(d && d.display_name){
-            destino = d.display_name;
-        }else{
-            destino = `Lat: ${lat.toFixed(5)}, Lng: ${lng.toFixed(5)}`;
-        }
-        marker.setPopupContent("🚌 "+destino).openPopup();
-    })
-    .catch(()=>{
-        destino = `Lat: ${lat.toFixed(5)}, Lng: ${lng.toFixed(5)}`;
-        marker.setPopupContent("🚌 "+destino).openPopup();
-    });
+fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+.then(r=>r.json())
+.then(data=>{
+let direccion=data.display_name || "Dirección no encontrada";
+marker.bindPopup("📍 "+direccion).openPopup();
 });
 
+});
+
+// 💾 GUARDAR SOLO clvRuta
 function guardar(){
-    if(!lat || !lng){
-        alert("Selecciona una ruta primero");
-        return;
-    }
 
-    let f = new FormData();
-    f.append("ruta",nombre);
-    f.append("destino",destino);
-    f.append("lat",lat);
-    f.append("lng",lng);
-
-    fetch("",{method:"POST",body:f})
-    .then(r=>r.json())
-    .then(()=>{
-        alert("Ruta guardada 🚍");
-    })
-    .catch(()=>{
-        alert("Error al guardar");
-    });
+if(!clvRutaSeleccionada){
+alert("Selecciona una ruta primero");
+return;
 }
 
+let f=new FormData();
+f.append("clvRuta",clvRutaSeleccionada);
+
+fetch("",{method:"POST",body:f})
+.then(r=>r.json())
+.then(data=>{
+alert("Ruta enviada con clave: "+data.clvRuta);
+});
+
+}
+
+// 📋 MIS RUTAS (preparado para backend)
 function misRutas(){
-    fetch("rutas.json")
-    .then(r=>r.json())
-    .then(data=>{
-        contenido.innerHTML="<h3>Mis Rutas</h3>";
 
-        if(!data || data.length===0){
-            contenido.innerHTML+="<p>No hay rutas guardadas</p>";
-        }else{
-            data.slice().reverse().forEach(r=>{
-                contenido.innerHTML+=`
-                <div style="background:white;margin:6px 0;padding:6px;border-radius:8px">
-                🚌 <b>${r.ruta}</b><br>
-                📍 ${r.destino}<br>
-                📅 ${r.fecha}
-                </div>`;
-            });
-        }
+// DESPUÉS HARÁ:
+// SELECT r.nombre, r.color
+// FROM mis_rutas m
+// JOIN rutas r ON r.clvRuta = m.clvRuta
 
-        panel.classList.add("active");
-    })
-    .catch(()=>{
-        contenido.innerHTML="<p>Error cargando rutas</p>";
-        panel.classList.add("active");
-    });
+contenido.innerHTML=`
+<h3>Mis Rutas</h3>
+<p>Aquí el backend devolverá las rutas reales usando JOIN.</p>
+`;
+
+panel.classList.add("active");
 }
+
 </script>
 </body>
 </html>
