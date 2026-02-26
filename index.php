@@ -16,6 +16,9 @@
         <a href="./inicio_sesion.php"><li>Inicio de sesión</li></a>
     </ul>
     <ul>
+        <a href="./registrar_usuario.php"><li>Registro de usuario</li></a>
+    </ul>
+    <ul>
         <a href="./pasajero.php"><li>Pasajeros</li></a>
     </ul>
 </body>
