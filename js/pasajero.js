@@ -10,7 +10,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 // Variables globales
 let busMarker = null;
 let trazadoTiempoReal = L.polyline([], {weight: 5}).addTo(map);
-const idBusASeguir = CH001; // Este ID debe coincidir con el del chofer
+const idBusASeguir = B0001; // Este ID debe coincidir con el del chofer
 
 // Icono personalizado para el autobús
 const busIcon = L.icon({
@@ -20,10 +20,10 @@ const busIcon = L.icon({
 });
 
 // 1. FUNCIÓN: Cargar la ruta oficial (la que debe seguir)
-async function dibujarRutaOficial(idRuta) {
+async function dibujarRutaOficial(clvRuta) {
     const { data: puntos, error } = await _supabase
         .from('puntos_ruta')
-        .select('lat, lng')
+        .select('lat, long')
         .eq('clvRuta', clvRuta)
         .order('orden', { ascending: true });
 
