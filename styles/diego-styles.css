@@ -15,6 +15,10 @@ label.inicio-sesion {
     font-size: 1rem;
 }
 
+.contenedor-datos-inicio-sesion input:invalid {
+    border: 2px solid #ff4d4d; /* Color rojo para indicar error */
+}
+
 img.logo-inicio-sesion {
     display: block;
     width: 60%;
@@ -34,7 +38,7 @@ img.logo-inicio-sesion {
 
     margin: 10vh auto 0;
     padding: 10px;
-    padding-bottom: 50px;
+    padding-bottom: 20px;
 
     border-radius: 20px;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 60%);
@@ -53,7 +57,27 @@ h1.titulo-inicio-sesion{
 .inicio-sesion-btn {
     display: block;
     margin: 10px auto 0;
-    padding: 1em;
+    padding: 0.5em 1em;
     border-radius: 5px;
     cursor: pointer;
+    background-color: #7cbc9a;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: all 0.2s;
+}
+
+.inicio-sesion-btn:hover {
+    background-color: #1d5e69;
+    color: white;
+    transform: scale(1.1);
+}
+
+.contenedor-datos-inicio-sesion + hr {
+    width: 50%;
+    margin-top: 30px;
+}
+
+.ir-a-registro {
+    text-align: center;
+    text-decoration: none;
 }
