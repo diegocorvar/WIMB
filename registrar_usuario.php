@@ -28,13 +28,13 @@
                 >
             </a>
 
-            <h1 class="titulo-inicio-sesion">Inicia Sesión</h1>
+            <h1 class="titulo-inicio-sesion">Regístrate</h1>
         </header>
 
         <!-- Contenedor del formulario -->
         <div class="contenedor-datos-inicio-sesion">
 
-            <!-- Formulario de inicio de sesión -->
+            <!-- Formulario de registro -->
             <form action="" method="POST">
 
                 <!-- Campo usuario -->
@@ -65,7 +65,7 @@
 
                 <!-- Botón -->
                 <button type="submit" class="inicio-sesion-btn">
-                    Iniciar Sesión
+                    Registrarse
                 </button>
 
             </form>
@@ -73,8 +73,8 @@
 
         <!-- Enlace a registro -->
         <p class="ir-a-registro">
-            ¿No tienes una cuenta?
-            <a href="./registrar_usuario.php">Regístrate</a>
+            ¿Ya tienes una cuenta?
+            <a href="./inicio_sesion.php">Inicia sesión</a>
         </p>
 
     </main>
