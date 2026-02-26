@@ -26,20 +26,8 @@ if($_SERVER["REQUEST_METHOD"]==="POST"){
 <meta charset="UTF-8">
 <title>SmartBus Apan</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<link rel="stylesheet" href="./styles/uriel-styles.css">
 <style>
-body{margin:0;font-family:sans-serif;background:#e9eef2;display:flex;justify-content:center;align-items:center;height:100vh}
-.app{width:95%;max-width:1000px;height:85vh;background:white;border-radius:20px;overflow:hidden;position:relative;box-shadow:0 15px 30px rgba(0,0,0,.2)}
-#map{height:100%}
-.top{position:absolute;top:15px;left:50%;transform:translateX(-50%);width:80%;display:flex;z-index:1000}
-.top input{flex:1;padding:10px;border:none;border-radius:20px 0 0 20px;background:#f3e1b6}
-.top button{width:50px;border:none;border-radius:0 20px 20px 0;background:#23998e;color:white;cursor:pointer}
-.list{position:absolute;top:60px;left:50%;transform:translateX(-50%);width:80%;background:white;border-radius:10px;padding:10px;display:none;z-index:1000}
-.list div{padding:6px;cursor:pointer}
-.list div:hover{background:#f3e1b6}
-.menu{position:absolute;bottom:20px;right:20px;display:none;flex-direction:column;gap:10px;z-index:1000}
-.menu button{width:55px;height:55px;border-radius:50%;border:none;background:#23998e;color:white;font-size:20px;cursor:pointer}
-.panel{position:absolute;bottom:-350px;left:50%;transform:translateX(-50%);width:90%;max-width:450px;height:280px;background:#f3e1b6;border-radius:20px 20px 0 0;padding:10px;transition:.3s;overflow:auto;z-index:1001}
-.panel.active{bottom:0}
 </style>
 </head>
 <body>
