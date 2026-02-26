@@ -28,6 +28,19 @@ if($_SERVER["REQUEST_METHOD"]==="POST"){
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 <link rel="stylesheet" href="./styles/uriel-styles.css">
 <style>
+#coords-display {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: white;
+    padding: 10px;
+    border: 2px solid #333;
+    border-radius: 5px;
+    font-family: monospace;
+    font-size: 14px;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
 </style>
 </head>
 <body>
@@ -37,6 +50,11 @@ if($_SERVER["REQUEST_METHOD"]==="POST"){
 <div class="top">
 <input id="busqueda" placeholder="Buscar ruta...">
 <button onclick="mostrar()">🔍</button>
+</div>
+
+<div id="coords-display" style="display: none;">
+<strong>📍 Coordenadas:</strong><br>
+<span id="lat-lng"></span>
 </div>
 
 <div class="list" id="lista"></div>
@@ -106,11 +124,15 @@ menu.style.display="flex";
 lista.style.display="none";
 }
 
-// 🗺 CLICK PARA SABER DIRECCIÓN (esto sí funciona real)
+// 🗺 CLICK PARA MOSTRAR LATITUD Y LONGITUD + DIRECCIÓN
 map.on("click",function(e){
 
-let lat=e.latlng.lat;
-let lng=e.latlng.lng;
+let lat = e.latlng.lat.toFixed(6);
+let lng = e.latlng.lng.toFixed(6);
+
+document.getElementById('lat-lng').textContent = `Lat: ${lat}, Lng: ${lng}`;
+
+document.getElementById('coords-display').style.display = 'block';
 
 if(marker) map.removeLayer(marker);
 
@@ -120,7 +142,7 @@ fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${
 .then(r=>r.json())
 .then(data=>{
 let direccion=data.display_name || "Dirección no encontrada";
-marker.bindPopup("📍 "+direccion).openPopup();
+marker.bindPopup(`📍 ${direccion}\n\n🌐 Lat: ${lat}, Lng: ${lng}`).openPopup();
 });
 
 });
