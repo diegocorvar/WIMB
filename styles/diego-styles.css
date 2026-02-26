@@ -1,83 +1,141 @@
-label.inicio-sesion {
-    display: block;
-    margin-bottom: 0.4em;
-    font-size: 1rem;
+/* ==============================
+   ESTILOS GENERALES
+============================== */
+
+body {
+    background-color: #f3e1b6;
     font-family: sans-serif;
-    font-weight: 600;
 }
 
-.contenedor-datos-inicio-sesion input {
-    box-sizing: border-box;
-    margin-bottom: 2em;
+/* ==============================
+   CONTENEDOR PRINCIPAL
+============================== */
+
+.contenedor-inicio-sesion {
+    width: 50%;
+    max-width: 600px;
+
+    background-color: #ffffff;
+
+    margin: 10vh auto;
+    padding: 10px 10px 20px;
+
+    border-radius: 20px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.6);
+}
+
+/* ==============================
+   HEADER
+============================== */
+
+.contenedor-inicio-sesion header {
     width: 100%;
-    padding: 0.5em;
-    border-radius: 10px;
-    font-size: 1rem;
+    margin-bottom: 50px;
 }
 
-.contenedor-datos-inicio-sesion input:invalid {
-    border: 2px solid #ff4d4d; /* Color rojo para indicar error */
-}
-
-img.logo-inicio-sesion {
+.logo-inicio-sesion {
     display: block;
     width: 60%;
     margin: 2em auto 5px;
 }
 
-.contenedor-inicio-sesion header {
-    margin-bottom: 50px;
-    display: block;
-    width: 100%;
+.logo-link:focus {
+    outline-color: #7cbc9a;
 }
 
-.contenedor-inicio-sesion {
-    width: 50%;
-    max-width: 600px;
-    background-color: #fff;
-
-    margin: 10vh auto 0;
-    padding: 10px;
-    padding-bottom: 20px;
-
-    border-radius: 20px;
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 60%);
-}
-
-.contenedor-datos-inicio-sesion{
-    width: 60%;
-    margin: auto;
-}
-
-h1.titulo-inicio-sesion{
+.titulo-inicio-sesion {
     text-align: center;
     font-size: 1.5rem;
 }
 
+/* ==============================
+   FORMULARIO
+============================== */
+
+.contenedor-datos-inicio-sesion {
+    width: 60%;
+    margin: auto;
+}
+
+/* Labels */
+label.inicio-sesion {
+    display: block;
+    margin-bottom: 0.4em;
+
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+/* Inputs */
+.contenedor-datos-inicio-sesion input {
+    width: 100%;
+    box-sizing: border-box;
+
+    margin-bottom: 2em;
+    padding: 0.5em;
+
+    font-size: 1rem;
+
+    border: 2px solid black;
+    border-radius: 10px;
+}
+
+.contenedor-datos-inicio-sesion input:focus {
+    outline: none;
+    border-color: #1d5e69;
+    box-shadow: 0 0 10px #7cbc9a;
+}
+
+/* ==============================
+   BOTÓN
+============================== */
+
 .inicio-sesion-btn {
     display: block;
     margin: 10px auto 0;
+
     padding: 0.5em 1em;
-    border-radius: 5px;
-    cursor: pointer;
-    background-color: #7cbc9a;
+
     font-size: 1.2rem;
     font-weight: bold;
-    transition: all 0.2s;
+
+    background-color: #7cbc9a;
+    border: none;
+    border-radius: 5px;
+
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
 .inicio-sesion-btn:hover {
     background-color: #1d5e69;
-    color: white;
+    color: #ffffff;
     transform: scale(1.1);
 }
 
-.contenedor-datos-inicio-sesion + hr {
-    width: 50%;
-    margin-top: 30px;
+.inicio-sesion-btn:focus {
+    box-shadow: 0 0 20px #7cbc9a;
 }
+
+/* ==============================
+   REGISTRO
+============================== */
 
 .ir-a-registro {
     text-align: center;
+    font-size: 1.2rem;
+}
+
+.ir-a-registro a {
     text-decoration: none;
+    font-weight: bold;
+    color: #1d5e69;
+}
+
+.ir-a-registro a:hover {
+    color: #0e133f;
+}
+
+.ir-a-registro a:visited {
+    color: #1d5e69;
 }

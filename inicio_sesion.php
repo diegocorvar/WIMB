@@ -1,36 +1,83 @@
-<?php
-
-
-
-
-?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Iniciar Sesión</title>
-    <link rel="stylesheet" href="./styles/diego-styles.css"/>
-    <link rel="stylesheet" href="./styles/normilize.css"/>
+
+    <!-- Normalización de estilos -->
+    <link rel="stylesheet" href="./styles/normalize.css">
+
+    <!-- Estilos personalizados -->
+    <link rel="stylesheet" href="./styles/diego-styles.css">
 </head>
-<body style="background-color: #f3e1b6">
+
+<body>
+
+    <!-- Contenedor principal del login -->
     <main class="contenedor-inicio-sesion">
+
+        <!-- Encabezado -->
         <header>
-            <a><img class="logo-inicio-sesion" src="./assets/images/logos/logo-verde-oscuro.svg"/></a>
+            <a href="./index.php" class="logo-link">
+                <img 
+                    class="logo-inicio-sesion" 
+                    src="./assets/images/logos/logo-verde-oscuro.svg"
+                    alt="Logo de la aplicación"
+                >
+            </a>
+
             <h1 class="titulo-inicio-sesion">Inicia Sesión</h1>
         </header>
+
+        <!-- Contenedor del formulario -->
         <div class="contenedor-datos-inicio-sesion">
-            <form>
-                <label for="username" class="inicio-sesion">Usuario:</label>
-                <input type="text" id="username" name="username" placeholder="Nombre de usuario"/>
 
-                <label for="user-password" class="inicio-sesion">Contraseña:</label>
-                <input type="password" id="user-password" name="user-password" placeholder="Contraseña"/>
+            <!-- Formulario de inicio de sesión -->
+            <form action="" method="POST">
 
-                <button type="submit" class="inicio-sesion-btn">Iniciar Sesión</button>
+                <!-- Campo usuario -->
+                <label for="username" class="inicio-sesion">
+                    Usuario:
+                </label>
+
+                <input 
+                    type="text" 
+                    id="username" 
+                    name="username" 
+                    placeholder="Nombre de usuario"
+                    required
+                >
+
+                <!-- Campo contraseña -->
+                <label for="password" class="inicio-sesion">
+                    Contraseña:
+                </label>
+
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    placeholder="Contraseña"
+                    required
+                >
+
+                <!-- Botón -->
+                <button type="submit" class="inicio-sesion-btn">
+                    Iniciar Sesión
+                </button>
+
             </form>
         </div>
-        <a href="#" class="ir-a-registro"><p>Resgistrarme</p></a>
+
+        <!-- Enlace a registro -->
+        <p class="ir-a-registro">
+            ¿No tienes una cuenta?
+            <a href="#">Regístrate</a>
+        </p>
+
     </main>
+
 </body>
 </html>
