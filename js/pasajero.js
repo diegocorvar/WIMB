@@ -35,7 +35,7 @@ async function dibujarRutaOficial(clvRuta) {
     // Dibujar la polilínea
     const poly = L.polyline(latlngs, {
         color: '#23998e', 
-        weight: 5, 
+        weight: 3, 
         lineJoin: "round", 
         opacity: 0.8
     }).addTo(map);
