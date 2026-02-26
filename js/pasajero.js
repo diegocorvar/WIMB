@@ -10,7 +10,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 // Variables globales
 let busMarker = null;
 let trazadoTiempoReal = L.polyline([], {weight: 5}).addTo(map);
-const idBusASeguir = 1; // Este ID debe coincidir con el del chofer
+const idBusASeguir = B0001; // Este ID debe coincidir con el del chofer
 
 // Icono personalizado para el autobús
 const busIcon = L.icon({
@@ -20,11 +20,11 @@ const busIcon = L.icon({
 });
 
 // 1. FUNCIÓN: Cargar la ruta oficial (la que debe seguir)
-async function dibujarRutaOficial(idRuta) {
+async function dibujarRutaOficial(clvRuta) {
     const { data: puntos, error } = await _supabase
         .from('puntos_ruta')
-        .select('lat, lng')
-        .eq('id_ruta', idRuta)
+        .select('lat, long')
+        .eq('clvRuta', clvRuta)
         .order('orden', { ascending: true });
 
     if (puntos) {
@@ -64,14 +64,14 @@ function actualizarMapa(lat, lng, velocidad) {
 const canal = _supabase
     .channel('seguimiento_pasajero')
     .on('postgres_changes', 
-        { event: 'INSERT', schema: 'public', table: 'monitoreo_buses', filter: `id_autobus=eq.${idBusASeguir}` }, 
+        { event: 'INSERT', schema: 'public', table: 'monitoreo', filter: `clvBus=eq.${idBusASeguir}` }, 
         (payload) => {
             const { lat, lng, velocidad } = payload.new;
             actualizarMapa(lat, lng, velocidad);
         }
     )
     .on('postgres_changes', 
-        { event: 'UPDATE', schema: 'public', table: 'monitoreo_buses', filter: `id_autobus=eq.${idBusASeguir}` }, 
+        { event: 'UPDATE', schema: 'public', table: 'monitoreo', filter: `clvBus=eq.${idBusASeguir}` }, 
         (payload) => {
             const { lat, lng, velocidad } = payload.new;
             actualizarMapa(lat, lng, velocidad);

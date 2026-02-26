@@ -29,6 +29,6 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    <script src="../pasajero.js"></script>
+    <script src="js/pasajero.js"></script>
 </body>
 </html>
