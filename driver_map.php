@@ -1,13 +1,21 @@
+<?php
+// Simulación de datos (luego vendrán de sesión)
+$nombre = "Alexis Cortes";
+$usuario = "alexis123";
+$rol = "Chofer";
+$email = "alexmartincortes19@gmail.com";
+
+// Generar iniciales automáticamente
+$partes = explode(" ", $nombre);
+$iniciales = strtoupper(substr($partes[0],0,1) . substr($partes[1] ?? '',0,1));
+?>
 <!DOCTYPE html>
 <html>
 <head>
 <link rel="stylesheet" href="styles/alex-styles.css">
 <title>Mapa Ruta</title>
 
-<!-- Leaflet CSS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-
-<!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 <style>
@@ -16,7 +24,6 @@
     border-radius: 10px;
 }
 </style>
-
 </head>
 <body>
 
@@ -38,12 +45,10 @@
 </div>
 
 <script>
-
 let viajeActivo = false;
 let watchId = null;
-let autobus_id = 1; // Luego puede venir de sesión
+let autobus_id = 1;
 
-// Crear mapa centrado en Tulancingo
 const map = L.map('map').setView([20.1167, -98.7333], 13);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
@@ -54,9 +59,6 @@ const rutaLinea = L.polyline([], {color:'green'}).addTo(map);
 
 let puntos = [];
 
-// =============================
-// INICIAR VIAJE
-// =============================
 document.getElementById("btnIniciar").addEventListener("click", () => {
 
     if(viajeActivo) return;
@@ -74,15 +76,12 @@ document.getElementById("btnIniciar").addEventListener("click", () => {
                 let lng = pos.coords.longitude;
                 let velocidad = pos.coords.speed ?? 0;
 
-                // Mover marcador suavemente
                 marcador.setLatLng([lat,lng]);
                 map.panTo([lat,lng]);
 
-                // Dibujar ruta
                 puntos.push([lat,lng]);
                 rutaLinea.setLatLngs(puntos);
 
-                // Cambiar color según velocidad
                 if(velocidad > 15){
                     rutaLinea.setStyle({color:'green'});
                 } else if(velocidad > 5){
@@ -91,7 +90,6 @@ document.getElementById("btnIniciar").addEventListener("click", () => {
                     rutaLinea.setStyle({color:'red'});
                 }
 
-                // Enviar al backend
                 fetch("api/guardarUbicacion.php",{
                     method:"POST",
                     headers:{"Content-Type":"application/json"},
@@ -122,9 +120,6 @@ document.getElementById("btnIniciar").addEventListener("click", () => {
     }
 });
 
-// =============================
-// FINALIZAR VIAJE
-// =============================
 document.getElementById("btnFinalizar").addEventListener("click", () => {
 
     if(!viajeActivo) return;
@@ -138,7 +133,74 @@ document.getElementById("btnFinalizar").addEventListener("click", () => {
     }
 
 });
+</script>
 
+
+<!-- ==============================
+     BOTÓN FLOTANTE PERFIL
+================================ -->
+<button class="profile-btn" onclick="toggleGooglePanel()">
+    <?php echo $iniciales; ?>
+</button>
+
+
+<!-- ==============================
+     PANEL PERFIL DINÁMICO
+================================ -->
+<div class="google-overlay" id="googleOverlay">
+
+    <div class="google-panel">
+
+        <div class="google-header">
+            <span class="email">
+                <?php echo htmlspecialchars($email); ?>
+            </span>
+            <button class="close-btn" onclick="toggleGooglePanel()">✕</button>
+        </div>
+
+        <div class="google-user">
+            <div class="google-avatar">
+                <?php echo $iniciales; ?>
+            </div>
+
+            <h2>
+                ¡Hola, <?php echo htmlspecialchars($nombre); ?>!
+            </h2>
+
+            <span class="role-badge">
+                <?php echo htmlspecialchars($rol); ?>
+            </span>
+        </div>
+
+        <div class="google-accounts">
+
+            <div class="account-item">
+                <div class="mini-avatar">
+                    <?php echo $iniciales; ?>
+                </div>
+                <div>
+                    <strong><?php echo htmlspecialchars($usuario); ?></strong>
+                    <p><?php echo htmlspecialchars($email); ?></p>
+                </div>
+            </div>
+
+            <div class="account-item">
+                Ver Perfil
+            </div>
+
+            <div class="account-item logout">
+                Cerrar sesión
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<script>
+function toggleGooglePanel(){
+    document.getElementById("googleOverlay").classList.toggle("show");
+}
 </script>
 
 </body>

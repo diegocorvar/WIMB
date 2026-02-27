@@ -1,31 +1,50 @@
 <?php
-if(isset($_POST['generar'])){
+$qr_url = null;
+$boleto_id = null;
+$error = null;
 
-    $ruta = $_POST['ruta'];
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['generar'])) {
 
-    // ID único del boleto
-    $boleto_id = uniqid("RUTA_");
+    if (!empty($_POST['ruta'])) {
 
-    // Datos que llevará el QR
-    $datosQR = json_encode([
-        "boleto_id" => $boleto_id,
-        "ruta" => $ruta
-    ]);
+        $ruta = trim($_POST['ruta']);
 
-    // Guardamos archivo de control de usos
-    $control = [
-        "usos" => 0,
-        "max_usos" => 2,
-        "ruta" => $ruta
-    ];
+        // Generar ID más seguro
+        $boleto_id = uniqid("RUTA_", true);
 
-    if(!file_exists("boletos")){
-        mkdir("boletos");
+        // Datos del QR
+        $datosQR = json_encode([
+            "boleto_id" => $boleto_id,
+            "ruta" => $ruta
+        ], JSON_UNESCAPED_UNICODE);
+
+        // Control de usos
+        $control = [
+            "usos" => 0,
+            "max_usos" => 2,
+            "ruta" => $ruta
+        ];
+
+        // Crear carpeta si no existe
+        if (!is_dir("boletos")) {
+            if (!mkdir("boletos", 0755, true)) {
+                $error = "No se pudo crear el directorio de boletos.";
+            }
+        }
+
+        // Guardar archivo JSON
+        if (!$error) {
+            file_put_contents(
+                "boletos/" . $boleto_id . ".json",
+                json_encode($control, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
+            );
+
+            $qr_url = "https://quickchart.io/qr?size=300&text=" . urlencode($datosQR);
+        }
+
+    } else {
+        $error = "Debes seleccionar una ruta.";
     }
-
-    file_put_contents("boletos/$boleto_id.json", json_encode($control));
-
-    $qr_url = "https://quickchart.io/qr?size=300&text=".urlencode($datosQR);
 }
 ?>
 
@@ -33,6 +52,7 @@ if(isset($_POST['generar'])){
 <html>
 <head>
 <link rel="stylesheet" href="styles/alex-styles.css">
+<meta charset="UTF-8">
 <title>Pagar Boleto</title>
 </head>
 <body>
@@ -45,24 +65,45 @@ if(isset($_POST['generar'])){
     <div class="card">
         <h3>Comprar Boleto</h3>
 
-        <form method="POST">
-            <label>Ruta</label>
-            <select name="ruta" required>
-                <option value="Ruta 1">Ruta 1</option>
-                <option value="Ruta 2">Ruta 2</option>
-            </select>
+        <?php if($error): ?>
+            <div class="advertencia">
+                <?php echo htmlspecialchars($error); ?>
+            </div>
+        <?php endif; ?>
 
-            <br><br>
+<form method="POST" autocomplete="off" class="form-modern">
 
-            <button class="btn-primary" name="generar">Generar Boleto</button>
-        </form>
+    <div class="form-group">
+        <label>Selecciona tu ruta</label>
+        <select name="ruta" required>
+            <option value="" disabled selected>Elegir ruta</option>
+            <option value="Ruta 1">Ruta 1</option>
+            <option value="Ruta 2">Ruta 2</option>
+        </select>
+    </div>
 
-        <?php if(isset($qr_url)){ ?>
-            <hr>
+    <button type="submit" class="btn-primary btn-full" name="generar">
+        Comprar boleto
+    </button>
+
+</form>
+
+        <?php if($qr_url): ?>
+            <hr style="margin:30px 0;">
+
             <h3>Tu Código QR</h3>
-            <img src="<?php echo $qr_url; ?>">
-            <p>ID: <?php echo $boleto_id; ?></p>
-        <?php } ?>
+
+            <div style="text-align:center;">
+                <img src="<?php echo htmlspecialchars($qr_url); ?>" 
+                     alt="Código QR del boleto"
+                     style="max-width:250px; border-radius:12px;">
+                
+                <p style="margin-top:15px; font-weight:600;">
+                    ID: <?php echo htmlspecialchars($boleto_id); ?>
+                </p>
+            </div>
+
+        <?php endif; ?>
 
     </div>
 </div>
