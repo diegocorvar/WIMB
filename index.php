@@ -24,5 +24,8 @@
     <ul>
         <a href="./conductor.php"><li>Conductor</li></a>
     </ul>
+    <ul>
+        <a href="./user_menu.php"><li>Menú usuario</li></a>
+    </ul>
 </body>
 </html>
