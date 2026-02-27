@@ -12,12 +12,10 @@
     <?php include 'user_admin.php'; ?>
 
     <div class="container">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <button class="btn-primary" onclick="abrirModalCrear()">+ Nueva Ruta</button>
-        </div>
+       
 
         <div class="card">
-                <h1>Gestión de Usuarios</h1>
+                <h1>Gestión de Rutas</h1>
             <table class="table" id="tablaRutas">
                 <thead>
                     <tr>
