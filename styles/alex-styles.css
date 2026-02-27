@@ -23,6 +23,20 @@
    HEADER ESTILO UBER
 ============================== */
 
+body{
+    font-family:'Segoe UI', Arial, sans-serif;
+    background-color:var(--color2);
+    color:var(--color5);
+}
+
+/* ==============================
+   HEADER ESTILO UBER
+============================== */
+header{
+    background:var(--blanco);
+    padding:20px 40px;
+    border-bottom:1px solid #e5e5e5;
+}
 
 header h2{
     font-size:1.4rem;
@@ -48,9 +62,7 @@ header h2{
     margin-bottom:30px;
     border:1px solid #eee;
     transition:0.2s ease;
-    position: absolute;
-    top: 5%;
-    right: 5%;
+
 }
 
 .card:hover{

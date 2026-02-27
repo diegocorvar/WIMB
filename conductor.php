@@ -7,6 +7,9 @@
 </head>
 <body>
 
+<?php include 'driver_menu.php'; ?>
+<?php include 'profile-menu.php'; ?>
+
 <div class="container">
     <div class="card status-card">
         <h2>Panel de Control del Chofer</h2>

@@ -9,6 +9,9 @@
 </head>
 <body>
 
+<?php include 'driver_menu.php'; ?>
+<?php include 'profile-menu.php'; ?>
+
 <header>
     <h2>Escáner de Código QR</h2>
 </header>
