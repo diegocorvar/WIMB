@@ -9,38 +9,27 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['generar'])) {
 
         $ruta = trim($_POST['ruta']);
 
-        // Generar ID más seguro
+        // Generar ID único
         $boleto_id = uniqid("RUTA_", true);
 
-        // Datos del QR
-        $datosQR = json_encode([
-            "boleto_id" => $boleto_id,
-            "ruta" => $ruta
-        ], JSON_UNESCAPED_UNICODE);
-
-        // Control de usos
+        // Control de usos (1 solo uso)
         $control = [
             "usos" => 0,
-            "max_usos" => 2,
+            "max_usos" => 1,
             "ruta" => $ruta
         ];
 
-        // Crear carpeta si no existe
         if (!is_dir("boletos")) {
-            if (!mkdir("boletos", 0755, true)) {
-                $error = "No se pudo crear el directorio de boletos.";
-            }
+            mkdir("boletos", 0755, true);
         }
 
-        // Guardar archivo JSON
-        if (!$error) {
-            file_put_contents(
-                "boletos/" . $boleto_id . ".json",
-                json_encode($control, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
-            );
+        file_put_contents(
+            "boletos/" . $boleto_id . ".json",
+            json_encode($control, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
+        );
 
-            $qr_url = "https://quickchart.io/qr?size=300&text=" . urlencode($datosQR);
-        }
+        // ⚠️ Ahora el QR solo contiene el ID
+        $qr_url = "https://quickchart.io/qr?size=300&text=" . urlencode($boleto_id);
 
     } else {
         $error = "Debes seleccionar una ruta.";
@@ -93,7 +82,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['generar'])) {
 
             <h3>Tu Código QR</h3>
 
-            <div style="text-align:center;">
+            <div style="text-align:center;" id="boletoContainer">
                 <img src="<?php echo htmlspecialchars($qr_url); ?>" 
                      alt="Código QR del boleto"
                      style="max-width:250px; border-radius:12px;">
@@ -102,6 +91,28 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['generar'])) {
                     ID: <?php echo htmlspecialchars($boleto_id); ?>
                 </p>
             </div>
+
+            <script>
+
+            let boletoId = "<?php echo $boleto_id; ?>";
+
+            // Revisar estado cada 2 segundos
+            setInterval(() => {
+
+                fetch("estado_boleto.php?boleto_id=" + boletoId)
+                .then(res => res.text())
+                .then(data => {
+
+                    if(data === "usado"){
+                        document.getElementById("boletoContainer").innerHTML = 
+                        "<h1 style='color:red;text-align:center;'>BOLETO CANCELADO</h1>";
+                    }
+
+                });
+
+            }, 2000);
+
+            </script>
 
         <?php endif; ?>
 

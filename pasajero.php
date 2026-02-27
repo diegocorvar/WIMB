@@ -42,6 +42,10 @@
         <img src="https://cdn-icons-png.flaticon.com/512/2838/2838912.png" width="25" alt="Centrar">
     </button>
 
+    <?php       
+        include 'profile-menu.php';  
+    ?>
+
     <div id="panel-ruta-detalle" class="panel-lateral">
         <div class="header-detalle">
             <h2 id="det-nombre-ruta">Detalles de Ruta</h2>

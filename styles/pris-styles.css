@@ -31,7 +31,7 @@ body {
 
 .btn-location {
     position: absolute;
-    bottom: 20%;
+    bottom: 15%;
     right: 2%;
     z-index: 1000;
     background: #fa3419;

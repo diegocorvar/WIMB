@@ -453,3 +453,14 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log("Modo búsqueda activado desde el menú");
     }
 });
+
+
+function mostrarPerfil() {
+    const panel = document.getElementById('card-perfil');
+    panel.style.display = "block";
+}
+
+function cerrarPerfil() {
+    const panel = document.getElementById('card-perfil');
+    panel.style.display = "none";
+}

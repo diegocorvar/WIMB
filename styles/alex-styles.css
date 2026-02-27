@@ -19,12 +19,6 @@
     padding:0;
 }
 
-body{
-    font-family:'Segoe UI', Arial, sans-serif;
-    background-color:var(--color2);
-    color:var(--color5);
-}
-
 /* ==============================
    HEADER ESTILO UBER
 ============================== */
@@ -54,6 +48,9 @@ header h2{
     margin-bottom:30px;
     border:1px solid #eee;
     transition:0.2s ease;
+    position: absolute;
+    top: 5%;
+    right: 5%;
 }
 
 .card:hover{
@@ -87,6 +84,23 @@ input:focus{
 /* ==============================
    BOTONES MODERNOS
 ============================== */
+.btn-cerrar {
+    position: absolute;
+    top: 2%;
+    right: 2%;
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #666;
+    cursor: pointer;
+    line-height: 1;
+    transition: color 0.3s;
+}
+
+.btn-cerrar:hover {
+    color: #fa3419; /* Color de énfasis al pasar el mouse */
+}
+
 button{
     border:none;
     padding:12px 22px;
