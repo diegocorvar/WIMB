@@ -1,83 +1,456 @@
-body{
+/* ==============================
+   VARIABLES DE COLOR
+============================== */
+:root{
+    --color1:#fa3419;
+    --color2:#f3e1b6;
+    --color3:#7cbc9a;
+    --color4:#23998e;
+    --color5:#1d5e69;
+    --blanco:#ffffff;
+}
+
+/* ==============================
+   RESET
+============================== */
+*{
+    box-sizing:border-box;
     margin:0;
-    font-family: Arial, Helvetica, sans-serif;
-    background-color:#f3e1b6;
+    padding:0;
 }
 
+body{
+    font-family:'Segoe UI', Arial, sans-serif;
+    background-color:var(--color2);
+    color:var(--color5);
+}
+
+/* ==============================
+   HEADER ESTILO UBER
+============================== */
 header{
-    background-color:#1d5e69;
-    color:white;
-    padding:15px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
+    background:var(--blanco);
+    padding:20px 40px;
+    border-bottom:1px solid #e5e5e5;
 }
 
-nav a{
-    color:white;
-    margin-right:15px;
-    text-decoration:none;
-    font-weight:bold;
+header h2{
+    font-size:1.4rem;
+    font-weight:600;
 }
 
+/* ==============================
+   CONTENEDOR
+============================== */
 .container{
-    padding:30px;
+    max-width:900px;
+    margin:50px auto;
+    padding:0 20px;
 }
 
+/* ==============================
+   CARD MODERNA
+============================== */
 .card{
-    background:white;
-    padding:20px;
-    border-radius:10px;
-    box-shadow:0px 5px 10px rgba(0,0,0,0.1);
+    background:var(--blanco);
+    padding:35px;
+    border-radius:16px;
+    margin-bottom:30px;
+    border:1px solid #eee;
+    transition:0.2s ease;
+}
+
+.card:hover{
+    box-shadow:0 10px 30px rgba(0,0,0,0.05);
+}
+
+.card h3{
+    font-weight:600;
+    margin-bottom:25px;
+}
+
+/* ==============================
+   FORMULARIOS MINIMALISTAS
+============================== */
+input{
+    width:100%;
+    padding:14px;
     margin-bottom:20px;
+    border:none;
+    border-bottom:2px solid #ddd;
+    background:transparent;
+    font-size:1rem;
+    transition:0.2s ease;
+}
+
+input:focus{
+    outline:none;
+    border-bottom:2px solid var(--color5);
+}
+
+/* ==============================
+   BOTONES MODERNOS
+============================== */
+button{
+    border:none;
+    padding:12px 22px;
+    border-radius:8px;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.2s ease;
+    font-size:0.95rem;
 }
 
 .btn-primary{
-    background-color:#fa3419;
+    background:var(--color5);
     color:white;
-    border:none;
-    padding:10px 20px;
-    border-radius:6px;
-    cursor:pointer;
+}
+
+.btn-primary:hover{
+    opacity:0.85;
 }
 
 .btn-secondary{
-    background-color:#23998e;
+    background:transparent;
+    color:var(--color5);
+    border:1px solid var(--color5);
+}
+
+.btn-secondary:hover{
+    background:var(--color5);
     color:white;
-    border:none;
-    padding:8px 15px;
-    border-radius:6px;
-    cursor:pointer;
 }
 
 .btn-danger{
-    background-color:#fa3419;
+    background:transparent;
+    color:var(--color1);
+    border:1px solid var(--color1);
+}
+
+.btn-danger:hover{
+    background:var(--color1);
     color:white;
-    border:none;
-    padding:6px 12px;
-    border-radius:6px;
 }
 
-input, select{
-    width:100%;
-    padding:10px;
-    margin:8px 0;
-    border-radius:6px;
-    border:1px solid #ccc;
-}
-
+/* ==============================
+   TABLA MINIMAL
+============================== */
 .table{
     width:100%;
     border-collapse:collapse;
 }
 
 .table th{
-    background-color:#23998e;
-    color:white;
-    padding:10px;
+    text-align:left;
+    padding-bottom:15px;
+    font-weight:600;
+    font-size:0.9rem;
+    border-bottom:2px solid #eee;
 }
 
 .table td{
-    padding:10px;
-    border-bottom:1px solid #ddd;
+    padding:18px 0;
+    border-bottom:1px solid #f0f0f0;
+}
+
+.table tr:hover{
+    background:rgba(0,0,0,0.02);
+}
+
+/* ==============================
+   RESPONSIVE
+============================== */
+@media(max-width:600px){
+
+    .card{
+        padding:25px;
+    }
+
+    button{
+        width:100%;
+        margin-bottom:10px;
+    }
+
+    .table{
+        display:block;
+        overflow-x:auto;
+        white-space:nowrap;
+    }
+}
+/* ==============================
+   FORMULARIO MODERNO
+============================== */
+
+.form-modern{
+    margin-top:20px;
+}
+
+.form-group{
+    margin-bottom:30px;
+}
+
+.form-group label{
+    font-size:0.9rem;
+    font-weight:600;
+    display:block;
+    margin-bottom:8px;
+    color:var(--color5);
+}
+
+.form-group select{
+    width:100%;
+    padding:14px;
+    border-radius:12px;
+    border:1px solid #ddd;
+    background:var(--blanco);
+    font-size:1rem;
+    transition:0.2s ease;
+    appearance:none;
+}
+
+.form-group select:focus{
+    outline:none;
+    border:1px solid var(--color5);
+    box-shadow:0 0 0 3px rgba(29,94,105,0.1);
+}
+
+/* Botón ancho completo */
+.btn-full{
+    width:100%;
+    padding:15px;
+    font-size:1rem;
+    border-radius:12px;
+}
+
+/* ==============================
+   HEADER PERFIL
+============================== */
+.header-profile{
+    background:var(--blanco);
+    padding:20px 40px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-bottom:1px solid #eee;
+}
+
+.header-profile nav{
+    display:flex;
+    gap:25px;
+}
+
+.header-profile nav a{
+    text-decoration:none;
+    font-weight:500;
+    color:var(--color5);
+    transition:0.2s;
+}
+
+.header-profile nav a:hover{
+    opacity:0.7;
+}
+
+.logout{
+    color:var(--color1);
+}
+
+/* ==============================
+   PROFILE CARD
+============================== */
+.profile-card{
+    max-width:500px;
+    margin:40px auto;
+    text-align:center;
+    padding:40px;
+}
+
+/* Avatar */
+.avatar{
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    background:var(--color5);
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:1.8rem;
+    font-weight:600;
+    margin:0 auto 15px;
+}
+
+/* Nombre */
+.profile-top h3{
+    margin-bottom:8px;
+    font-weight:600;
+}
+
+/* Badge Rol */
+.role-badge{
+    background:var(--color3);
+    color:white;
+    padding:6px 14px;
+    border-radius:20px;
+    font-size:0.8rem;
+}
+
+/* Información */
+.profile-info{
+    margin:30px 0;
+    text-align:left;
+}
+
+.info-item{
+    display:flex;
+    justify-content:space-between;
+    padding:15px 0;
+    border-bottom:1px solid #eee;
+}
+
+.info-item span{
+    color:#777;
+    font-size:0.9rem;
+}
+
+.info-item strong{
+    font-weight:600;
+}
+
+/* ==============================
+   GOOGLE STYLE PANEL
+============================== */
+
+.google-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.35);
+    backdrop-filter:blur(4px);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:1000;
+}
+
+.google-overlay.show{
+    display:flex;
+}
+
+.google-panel{
+    width:380px;
+    background:white;
+    border-radius:25px;
+    padding:25px;
+    box-shadow:0 25px 60px rgba(0,0,0,0.2);
+    animation:fadeIn 0.2s ease;
+}
+
+/* Header */
+.google-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:0.9rem;
+    margin-bottom:20px;
+}
+
+.close-btn{
+    border:none;
+    background:none;
+    font-size:1.2rem;
+    cursor:pointer;
+}
+
+/* User section */
+.google-user{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.google-avatar{
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    background:var(--color5);
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:1.8rem;
+    font-weight:600;
+    margin:0 auto 15px;
+}
+
+.google-user h2{
+    font-weight:500;
+    margin-bottom:15px;
+}
+
+.manage-btn{
+    background:transparent;
+    border:1px solid var(--color5);
+    padding:10px 18px;
+    border-radius:25px;
+    cursor:pointer;
+    font-weight:500;
+    transition:0.2s;
+}
+
+.manage-btn:hover{
+    background:var(--color5);
+    color:white;
+}
+
+/* Accounts section */
+.google-accounts{
+    border-top:1px solid #eee;
+    padding-top:15px;
+}
+
+.account-item{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    padding:12px;
+    border-radius:15px;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.account-item:hover{
+    background:var(--color2);
+}
+
+.mini-avatar{
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    background:var(--color3);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:white;
+    font-weight:600;
+}
+
+.account-item p{
+    font-size:0.8rem;
+    color:#666;
+    margin:0;
+}
+
+.account-item.add{
+    justify-content:center;
+    font-weight:500;
+}
+
+.account-item.logout{
+    justify-content:center;
+    color:var(--color1);
+    font-weight:500;
+}
+
+/* Animación */
+@keyframes fadeIn{
+    from{opacity:0; transform:scale(0.95);}
+    to{opacity:1; transform:scale(1);}
 }
