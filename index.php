@@ -21,5 +21,8 @@
     <ul>
         <a href="./pasajero.php"><li>Pasajeros</li></a>
     </ul>
+    <ul>
+        <a href="./conductor.php"><li>Conductor</li></a>
+    </ul>
 </body>
 </html>

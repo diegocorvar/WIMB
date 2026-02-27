@@ -1,88 +1,60 @@
-// Configuración de Supabase
+// Configuración
 const SUPABASE_URL = 'https://kdvkzyoecsqzuguohfmk.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_3AyvQekNP4vsK2L14JhG5Q_1mERiBDi';
 const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// Inicializar mapa (Centrado en la terminal o ciudad por defecto)
-const map = L.map('map').setView([20.1167, -98.7333], 14);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+// VARIABLES GLOBALES - Asegúrate de que coincidan con el conductor
+const idBusASeguir = '10'; // Antes tenías 'B0001', pero el conductor usa 10
 
-// Variables globales
-let busMarker = null;
-let trazadoTiempoReal = L.polyline([], {weight: 5}).addTo(map);
-const idBusASeguir = 'B0001'; // Este ID debe coincidir con el del chofer
-
-// Icono personalizado para el autobús
-const busIcon = L.icon({
-    iconUrl: 'https://cdn-icons-png.flaticon.com/512/3448/3448339.png', // Puedes usar uno local
-    iconSize: [40, 40],
-    iconAnchor: [20, 20]
-});
-
-// 1. FUNCIÓN: Cargar la ruta oficial (la que debe seguir)
-async function dibujarRutaOficial(clvRuta) {
-    console.log("Intentando cargar ruta con clave:", clvRuta);
+// 1. FUNCIÓN: Cargar la ruta oficial
+async function dibujarRutaOficial(cve_ruta) {
+    console.log("Intentando cargar ruta con clave:", cve_ruta);
 
     const { data: puntos, error } = await _supabase
-        .from('puntos_ruta')
-        .select('lat, long, orden') 
-        .eq('clvRuta', clvRuta)
+        .from('puntos_de_ruta') // Nombre exacto de tu imagen
+        .select('latitud, longitud, orden') // Nombres exactos de tu imagen
+        .eq('cve_ruta', cve_ruta)
         .order('orden', { ascending: true });
 
-    // Convertimos los datos al formato de Leaflet [lat, long]
-    const latlngs = puntos.map(p => [p.lat, p.long]);
+    if (error || !puntos) return console.error("Error cargando ruta:", error);
 
-    // Dibujar la polilínea
+    // Convertimos datos: nota que tu tabla usa 'latitud' y 'longitud'
+    const latlngs = puntos.map(p => [p.lat, p.long]);
     const poly = L.polyline(latlngs, {
-        color: '#23998e', 
+        color: '#fa3419', 
         weight: 3, 
         lineJoin: "round", 
         opacity: 0.8
     }).addTo(map);
 
-    // Ajustar el zoom automáticamente para que se vea toda la ruta trazada
-    map.fitBounds(poly.getBounds());
+    if (latlngs.length > 0) map.fitBounds(poly.getBounds());
 }
 
-// 2. FUNCIÓN: Actualizar el bus y su rastro en el mapa
+// 2. FUNCIÓN: Actualizar el bus
 function actualizarMapa(lat, long, velocidad) {
     const nuevaPos = [lat, long];
-
-    // Mover o crear el marcador del bus
     if (!busMarker) {
         busMarker = L.marker(nuevaPos, {icon: busIcon}).addTo(map);
     } else {
         busMarker.setLatLng(nuevaPos);
     }
 
-    // Actualizar la "estela" (color según velocidad)
-    let colorTrafico = 'green';
-    if (velocidad <= 5) colorTrafico = 'red';
-    else if (velocidad <= 15) colorTrafico = 'yellow';
-
+    let colorTrafico = (velocidad <= 5) ? 'red' : (velocidad <= 15) ? 'yellow' : 'green';
     trazadoTiempoReal.addLatLng(nuevaPos);
     trazadoTiempoReal.setStyle({color: colorTrafico});
 
-    // Centrar suavemente si el bus se sale del mapa
-    if (!map.getBounds().contains(nuevaPos)) {
-        map.panTo(nuevaPos);
-    }
-
-    document.getElementById('status').innerText = `En movimiento: ${Math.round(velocidad)} km/h`;
+    if (!map.getBounds().contains(nuevaPos)) map.panTo(nuevaPos);
+    
+    const statusLabel = document.getElementById('status');
+    if (statusLabel) statusLabel.innerText = `En movimiento: ${Math.round(velocidad)} km/h`;
 }
 
 // 3. TIEMPO REAL: Suscribirse a la tabla de monitoreo
+// IMPORTANTE: El filtro debe usar 'cve_bus' para coincidir con el conductor
 const canal = _supabase
     .channel('seguimiento_pasajero')
     .on('postgres_changes', 
-        { event: 'INSERT', schema: 'public', table: 'monitoreo', filter: `clvBus=eq.${idBusASeguir}` }, 
-        (payload) => {
-            const { lat, long, velocidad } = payload.new;
-            actualizarMapa(lat, long, velocidad);
-        }
-    )
-    .on('postgres_changes', 
-        { event: 'UPDATE', schema: 'public', table: 'monitoreo', filter: `clvBus=eq.${idBusASeguir}` }, 
+        { event: '*', schema: 'public', table: 'monitoreo', filter: `cve_bus=eq.${idBusASeguir}` }, 
         (payload) => {
             const { lat, long, velocidad } = payload.new;
             actualizarMapa(lat, long, velocidad);
@@ -90,5 +62,5 @@ const canal = _supabase
     )
     .subscribe();
 
-// Ejecución inicial
-dibujarRutaOficial('1'); // Supongamos que queremos ver la ruta ID 1
+// Ejecución inicial: Usamos 1 o la clave de ruta que tengas en la tabla 'rutas'
+dibujarRutaOficial(1);
