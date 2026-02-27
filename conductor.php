@@ -20,6 +20,6 @@
 </div>
 
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-<script src="js/pasajero.js"></script>
+<script src="js/conductor.js"></script>
 </body>
 </html>

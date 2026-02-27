@@ -25,20 +25,21 @@ height:100%
 
 .top{
 position:absolute;
-top:15px;
+top:5%;
 left:50%;
 transform:translateX(-50%);
-width:80%;
+width:40%;
 display:flex;
-z-index:1000
+z-index:1000;
 }
 
 .top input{
 flex:1;
-padding:10px;
-border:none;
+padding:15px;
+border: 1px solid;
+border-color: #ebbe57;
 border-radius:20px 0 0 20px;
-background:#f3e1b6
+background:#f3e1b6;
 }
 
 .top button{
@@ -50,18 +51,25 @@ color:white;
 cursor:pointer
 }
 
+.top input:focus {
+    outline: none;
+    border: 3px solid;
+    border-color: #ebbe57;
+}
+
 .list{
 position:absolute;
-top:60px;
+top: 12%;
 left:50%;
 transform:translateX(-50%);
-width:80%;
+width:35%;
 background:white;
 border-radius:10px;
 padding:10px;
 display:none;
 z-index:1000
 }
+
 
 .list div{
 padding:6px;
@@ -111,4 +119,31 @@ z-index:1001
 
 .panel.active{
 bottom:0
+}
+
+#coords-display {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: white;
+    padding: 10px;
+    border: 2px solid #333;
+    border-radius: 5px;
+    font-family: monospace;
+    font-size: 14px;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+#resultado-busqueda {
+    position: fixed;
+    top: 60px;
+    right: 10px;
+    background: #4CAF50;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    z-index: 1001;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    display: none;
 }
