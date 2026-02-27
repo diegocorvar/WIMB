@@ -20,13 +20,13 @@ const busIcon = L.icon({
 });
 
 // 1. FUNCIÓN: Cargar la ruta oficial (la que debe seguir)
-async function dibujarRutaOficial(clvRuta) {
-    console.log("Intentando cargar ruta con clave:", clvRuta);
+async function dibujarRutaOficial(cve_rutas) {
+    console.log("Intentando cargar ruta con clave:", cve_rutas);
 
     const { data: puntos, error } = await _supabase
         .from('puntos_ruta')
         .select('lat, long, orden') 
-        .eq('clvRuta', clvRuta)
+        .eq('cve_rutas', cve_rutas)
         .order('orden', { ascending: true });
 
     // Convertimos los datos al formato de Leaflet [lat, long]
