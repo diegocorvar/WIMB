@@ -26,7 +26,7 @@ async function dibujarRutaOficial(cve_ruta) {
 
     const { data: puntos, error } = await _supabase
         .from('puntos_de_ruta') // Nombre exacto de tu imagen
-        .select('latitud, longitud, orden') // Nombres exactos de tu imagen
+        .select('latitud, longitud') // Nombres exactos de tu imagen
         .eq('cve_ruta', cve_ruta)
         .order('orden', { ascending: true });
 
