@@ -25,20 +25,21 @@ height:100%
 
 .top{
 position:absolute;
-top:15px;
+top:5%;
 left:50%;
 transform:translateX(-50%);
-width:80%;
+width:40%;
 display:flex;
-z-index:1000
+z-index:1000;
 }
 
 .top input{
 flex:1;
-padding:10px;
-border:none;
+padding:15px;
+border: 1px solid;
+border-color: #ebbe57;
 border-radius:20px 0 0 20px;
-background:#f3e1b6
+background:#f3e1b6;
 }
 
 .top button{
@@ -50,18 +51,25 @@ color:white;
 cursor:pointer
 }
 
+.top input:focus {
+    outline: none;
+    border: 3px solid;
+    border-color: #ebbe57;
+}
+
 .list{
 position:absolute;
-top:60px;
+top: 12%;
 left:50%;
 transform:translateX(-50%);
-width:80%;
+width:35%;
 background:white;
 border-radius:10px;
 padding:10px;
 display:none;
 z-index:1000
 }
+
 
 .list div{
 padding:6px;

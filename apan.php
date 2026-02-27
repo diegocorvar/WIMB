@@ -202,7 +202,7 @@ map.on("click",function(e){
     .then(r=>r.json())
     .then(data=>{
         let direccion=data.display_name || "Dirección no encontrada";
-        marker.bindPopup(`📍 ${direccion}\n\n🌐 Lat: ${lat}, Lng: ${lng}`).openPopup();
+        marker.bindPopup(`📍 ${direccion}`).openPopup();
     });
 });
 

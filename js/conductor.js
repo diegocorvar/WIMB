@@ -6,7 +6,6 @@ const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 let watchId = null;
 const cve_bus = 10; 
 
-// Asegurémonos de que los elementos existen antes de asignar eventos
 const btnIniciar = document.getElementById('btnIniciar');
 const btnFinalizar = document.getElementById('btnFinalizar');
 
@@ -17,17 +16,13 @@ async function enviarUbicacion(lat, long, velocidad) {
         .from('monitoreo')
         .upsert({ 
             cve_bus: cve_bus, 
+            cve_ruta: 10,
             lat: lat, 
             long: long, 
             velocidad: velocidad,
             last_update: new Date().toISOString(),
             estado: 'En ruta'
         }, { onConflict: 'cve_bus' });
-
-    if (error) {
-        console.error("Error en Upsert:", error.message);
-        // Si sale error de "Duplicate key", verifica que cve_bus sea la Primary Key en Supabase
-    }
 }
 
 btnIniciar.addEventListener('click', () => {
@@ -37,7 +32,6 @@ btnIniciar.addEventListener('click', () => {
         return alert("Tu navegador no soporta GPS.");
     }
 
-    // Cambiamos el texto inmediatamente para saber que el botón respondió
     txtEstado.innerText = "Buscando señal GPS...";
 
     watchId = navigator.geolocation.watchPosition(
@@ -61,7 +55,7 @@ btnIniciar.addEventListener('click', () => {
         },
         { 
             enableHighAccuracy: true, 
-            timeout: 10000, // 10 segundos para encontrar señal
+            timeout: 10000, 
             maximumAge: 0 
         }
     );
@@ -70,8 +64,7 @@ btnFinalizar.addEventListener('click', async () => {
     if (watchId) {
         navigator.geolocation.clearWatch(watchId);
         watchId = null;
-        
-        // Opcional: Marcar como desconectado en la DB
+    
         await _supabase.from('monitoreo').update({ estado: 'Fuera de servicio' }).eq('cve_bus', cve_bus);
 
         txtEstado.innerText = "Desconectado";
