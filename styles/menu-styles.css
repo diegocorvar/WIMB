@@ -28,6 +28,7 @@ body {
 
     overflow-y: auto;
     overflow-x: hidden;
+    z-index: 1001;
 }
 
 /* Estado activo del menú */
@@ -42,6 +43,9 @@ body {
 .menu-btn {
     width: 50px;
     height: 50px;
+    position: absolute;
+    top: 2%;
+    left: 2%;
 
     background-color: #1d5e69;
     border-radius: 10px;
@@ -51,6 +55,7 @@ body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    z-index: 1001;
 }
 
 .menu-btn.oculto {

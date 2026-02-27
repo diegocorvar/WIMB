@@ -16,13 +16,21 @@ async function enviarUbicacion(lat, long, velocidad) {
         .from('monitoreo')
         .upsert({ 
             cve_bus: cve_bus, 
-            cve_ruta: 10,
+            cve_ruta: 2,
             lat: lat, 
             long: long, 
             velocidad: velocidad,
             last_update: new Date().toISOString(),
             estado: 'En ruta'
-        }, { onConflict: 'cve_bus' });
+        }, { onConflict: 'cve_bus' })
+        .select();
+
+        if (error) {
+            console.error("ERROR de Supabase al enviar:", error.message);
+            txtEstado.innerText = "Error al guardar en DB";
+        } else {
+            console.log("Confirmación de DB:", data);
+        }
 }
 
 btnIniciar.addEventListener('click', () => {

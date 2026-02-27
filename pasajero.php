@@ -21,8 +21,12 @@
         </div>
     </div>
 
-    <div class="top">
-        <input id="busqueda" placeholder="Buscar rutas o direcciones...">
+    <?php include 'user_menu.php'; ?>
+
+    <?php $mostrarBusqueda = (isset($_GET['accion']) && $_GET['accion'] == 'buscar'); ?>
+
+    <div class="top" style="<?php echo $mostrarBusqueda ? 'display:flex;' : 'display:none;'; ?>">
+        <input id="busqueda" placeholder="Buscar rutas...">
         <button onclick="buscar()">🔍</button>
     </div>
 

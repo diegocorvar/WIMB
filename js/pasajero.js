@@ -431,3 +431,25 @@ async function buscarTransporteCercano(lat, lng, nombreLugar) {
         
     });
 }
+
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    // 1. Revisar si la URL contiene "?accion=buscar"
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    if (urlParams.get('accion') === 'buscar') {
+        const inputBusqueda = document.getElementById('busqueda');
+        const topBar = document.querySelector('.top');
+
+        // Asegurar que la barra sea visible (en caso de que tenga display:none)
+        if (topBar) topBar.style.display = 'flex';
+
+        // Dar foco automáticamente al buscador y hacer un pequeño scroll
+        inputBusqueda.focus();
+        inputBusqueda.scrollIntoView({ behavior: 'smooth' });
+
+        // Opcional: Mostrar un mensaje o abrir la lista vacía
+        console.log("Modo búsqueda activado desde el menú");
+    }
+});

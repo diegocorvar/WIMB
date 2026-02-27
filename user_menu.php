@@ -21,7 +21,7 @@
 
         <!-- Barra superior del menú -->
         <div class="top-nav">
-            <a href="./index.php">
+            <a href="./pasajero.php">
                 <img 
                     class="logo-menu" 
                     src="./assets/images/logos/logo-blanco.svg" 
@@ -40,7 +40,7 @@
         <!-- Opciones de navegación -->
         <nav>
             <ul class="menu-options">
-                <li><a href="./apan.php" class="menu-option">Buscar ruta</a></li>
+                <li><a href="./pasajero.php?accion=buscar" class="menu-option">Buscar ruta</a></li>
                 <li><a href="./passenger_payment.php" class="menu-option">Comprar pasaje</a></li>
                 <li><a href="./tickets.php" class="menu-option">Mis pasajes</a></li>
                 <li><a href="./pasajero.php" class="menu-option">Where is my bus?</a></li>
