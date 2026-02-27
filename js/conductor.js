@@ -16,7 +16,7 @@ async function enviarUbicacion(lat, long, velocidad) {
         .from('monitoreo')
         .upsert({ 
             cve_bus: cve_bus, 
-            cve_ruta: 2,
+            cve_ruta: 1,
             lat: lat, 
             long: long, 
             velocidad: velocidad,
