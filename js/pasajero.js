@@ -1,5 +1,24 @@
+// Configuración
+const SUPABASE_URL = 'https://kdvkzyoecsqzuguohfmk.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_3AyvQekNP4vsK2L14JhG5Q_1mERiBDi';
+const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+
+// Inicializar mapa
+const map = L.map('map').setView([20.1167, -98.7333], 14);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+// Variables globales
+let busMarker = null;
+let trazadoTiempoReal = L.polyline([], {weight: 5}).addTo(map);
+
+const busIcon = L.icon({
+    iconUrl: 'https://cdn-icons-png.flaticon.com/512/3448/3448339.png',
+    iconSize: [40, 40],
+    iconAnchor: [20, 20]
+});
 // VARIABLES GLOBALES - Asegúrate de que coincidan con el conductor
-const idBusASeguir = '10'; // Antes tenías 'B0001', pero el conductor usa 10
+const idBusASeguir = 10; // Antes tenías 'B0001', pero el conductor usa 10
 
 // 1. FUNCIÓN: Cargar la ruta oficial
 async function dibujarRutaOficial(cve_ruta) {
@@ -7,18 +26,17 @@ async function dibujarRutaOficial(cve_ruta) {
 
     const { data: puntos, error } = await _supabase
         .from('puntos_de_ruta') // Nombre exacto de tu imagen
-        .select('latitud, longitud, orden') // Nombres exactos de tu imagen
+        .select('latitud, longitud') // Nombres exactos de tu imagen
         .eq('cve_ruta', cve_ruta)
         .order('orden', { ascending: true });
 
     if (error || !puntos) return console.error("Error cargando ruta:", error);
 
     // Convertimos datos: nota que tu tabla usa 'latitud' y 'longitud'
-    const latlngs = puntos.map(p => [parseFloat(p.latitud), parseFloat(p.longitud)]);
-
+    const latlngs = puntos.map(p => [p.latitud, p.longitud]);
     const poly = L.polyline(latlngs, {
         color: '#fa3419', 
-        weight: 4, 
+        weight: 3, 
         lineJoin: "round", 
         opacity: 0.8
     }).addTo(map);
