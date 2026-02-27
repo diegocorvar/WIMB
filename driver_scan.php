@@ -3,6 +3,8 @@
 <head>
 <link rel="stylesheet" href="styles/alex-styles.css">
 <title>Escanear QR</title>
+<meta charset="UTF-8">
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 </head>
 <body>
 
@@ -15,16 +17,59 @@
     <div class="card">
         <h3>Escanear Ticket</h3>
 
-        <div style="height:300px; background:#ddd; display:flex; align-items:center; justify-content:center; border-radius:10px;">
-            📷 Cámara Activa (Diseño)
-        </div>
+        <!-- Contenedor real de cámara -->
+        <div id="reader" style="width:100%; max-width:400px; margin:auto;"></div>
 
         <br>
 
-        <button class="btn-primary">Validar y Caducar Código</button>
+        <div id="resultado" style="text-align:center; font-weight:bold;"></div>
+
+        <br>
+
+        <button class="btn-primary" onclick="iniciarEscaneo()">
+            Activar Cámara
+        </button>
+
     </div>
 
 </div>
+
+<script>
+
+let qrScanner;
+
+function iniciarEscaneo() {
+
+    document.getElementById("resultado").innerHTML = "📷 Activando cámara...";
+
+    qrScanner = new Html5Qrcode("reader");
+
+    qrScanner.start(
+        { facingMode: "environment" }, // Cámara trasera
+        {
+            fps: 10,
+            qrbox: 250
+        },
+        (decodedText) => {
+
+            // Cuando detecta QR correctamente
+            document.getElementById("resultado").innerHTML =
+                "✅ QR escaneado con éxito";
+
+            qrScanner.stop();
+
+        },
+        (errorMessage) => {
+            // errores de lectura (los ignoramos)
+        }
+    ).catch(err => {
+        document.getElementById("resultado").innerHTML =
+            "❌ Error al abrir la cámara";
+        console.log(err);
+    });
+}
+
+</script>
 
 </body>
 </html>
